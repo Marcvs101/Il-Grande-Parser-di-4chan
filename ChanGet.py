@@ -21,8 +21,7 @@ from bs4 import BeautifulSoup
 
 # In futuro il demone guarderà a tutte e 10 le pagine di immondizia della board
 # In futuro saranno implementati eventi
-
-
+    
 # Classe filtro
 class Filter:
     # Costruttore
@@ -48,7 +47,8 @@ class ChanBoardWatchdog (threading.Thread):
         # Variabili di istanza
         self.board = board
         self.deepFilter = False
-        self.notify = False
+        # Variabili per il logging
+        self.logger = None
         # Strutture interne
         self.parsed_threads_html = {}
         self.parsed_threads_text = {}
@@ -96,8 +96,8 @@ class ChanBoardWatchdog (threading.Thread):
     def setDeepFilterMode(self,mode = False):
         self.deepFilter = mode
 
-    def setNotificationsMode(self, mode = False):
-        self.notify = mode
+    def setLogger(self, logger_instance):
+        self.logger = logger_instance
 
     # Add set of words to be evaluated in AND
     def addFilterToSet(self,new_filter):
@@ -136,8 +136,8 @@ class ChanBoardWatchdog (threading.Thread):
                     if (fil.evaluate(threads_text["Replies"][reply])):
                         accept = True
                 if (accept):
-                    if (self.notify):
-                        print("thread matched condition: "+str(thread))
+                    if (self.logger != None):
+                        self.logger.write("thread matched condition: "+thread)
                     ret.add(thread)
         return ret
 
