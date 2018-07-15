@@ -47,6 +47,7 @@ class ChanBoardWatchdog (threading.Thread):
         threading.Thread.__init__(self)
         # Variabili di istanza
         self.board = board
+        self.deepFilter = False
         # Strutture interne
         self.parsed_threads_html = {}
         self.parsed_threads_text = {}
@@ -63,7 +64,7 @@ class ChanBoardWatchdog (threading.Thread):
         self.Attivo = True
         while(self.Attivo):
             self.__Fetch__()
-            accepted = self.__Condizioni__()
+            accepted = self.__Condizioni__(self.deepFilter)
             for thread in accepted:
                 monitor = self.SpawnThreadWatchdog(thread)
                 self.monitor_attivi.add(monitor)
@@ -90,6 +91,9 @@ class ChanBoardWatchdog (threading.Thread):
     # Setter
     def setFilterSet(self,filters = set()):
         self.filters = filters
+
+    def setDeepFilterMode(self,mode = False):
+        self.deepFilter = mode
 
     # Add set of words to be evaluated in AND
     def addFilterToSet(self,new_filter):
