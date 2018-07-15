@@ -48,6 +48,7 @@ class ChanBoardWatchdog (threading.Thread):
         # Variabili di istanza
         self.board = board
         self.deepFilter = False
+        self.notify = False
         # Strutture interne
         self.parsed_threads_html = {}
         self.parsed_threads_text = {}
@@ -95,6 +96,9 @@ class ChanBoardWatchdog (threading.Thread):
     def setDeepFilterMode(self,mode = False):
         self.deepFilter = mode
 
+    def setNotificationsMode(self, mode = False):
+        self.notify = mode
+
     # Add set of words to be evaluated in AND
     def addFilterToSet(self,new_filter):
         self.filters.add(new_filter)
@@ -113,6 +117,8 @@ class ChanBoardWatchdog (threading.Thread):
         ret = set()
         
         for thread in self.parsed_threads_text:
+            if (thread in self.thread_monitorati):
+                continue
             # Controllo profondo, le chiamate http sono bloccanti
             if (profondo):
                 scanner = self.SpawnThreadWatchdog(thread)
@@ -130,6 +136,8 @@ class ChanBoardWatchdog (threading.Thread):
                     if (fil.evaluate(threads_text["Replies"][reply])):
                         accept = True
                 if (accept):
+                    if (self.notify):
+                        print("thread matched condition: "+str(thread))
                     ret.add(thread)
         return ret
 

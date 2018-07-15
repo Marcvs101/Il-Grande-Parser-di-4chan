@@ -4,10 +4,10 @@ from ChanGet import Filter
 
 BOARD = input("inserire il nome della board: ").strip()
 BoardWatch = ChanBoardWatchdog(BOARD)
-f = Filter("filtro1", {"prova"})
+BoardWatch.setDeepFilterMode(True)
+BoardWatch.setNotificationsMode(True)
+f = Filter("filtro1", {"anon"})
 BoardWatch.addFilterToSet(f)
 
 print("Starting...")
 BoardWatch.start()
-input("Crepa? ")
-BoardWatch.stop()
