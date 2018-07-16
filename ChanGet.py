@@ -1,4 +1,6 @@
 from urllib.request import Request
+from nltk.tokenize import word_tokenize
+from nltk.stem import SnowballStemmer
 import urllib.error
 import threading
 import time
@@ -28,13 +30,15 @@ class Filter:
     def __init__(self, name, words):
         self.name = name.lower()
         self.words = set()
+        self.stemmer = SnowballStemmer("english")
         for i in words:
             self.words.add(i.lower())
 
     # Funzione di valutazione
     def evaluate(self, s):
+        s_tokens = list(map(self.stemmer.stem, word_tokenize(s.replace(",", " ").replace(".", " ").replace("(", " ").replace(")", " "))))
         for word in self.words:
-            if (re.search(word,str(s).lower()) == None):
+            if (not self.stemmer.stem(word) in s_tokens):
                 return False
         return True
 

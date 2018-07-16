@@ -12,6 +12,6 @@ print(BOARD, THREAD)
 
 ThreadWatch = ChanGet.ChanThreadWatchdog(BOARD,THREAD)
 ThreadWatch.start()
-
-input("Premere invio per chiudere")
+print(ThreadWatch.getTextDict())
+input()
 ThreadWatch.stop()
