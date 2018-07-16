@@ -112,6 +112,11 @@ class ChanBoardWatchdog (threading.Thread):
         watchdog = ChanThreadWatchdog(self.board,thread)
         return watchdog
 
+    # Scrivi nel logger
+    def __writeOnLog__(self, s):
+        if (self.logger != None):
+            self.logger.write(s)
+
     # Controllo condizioni
     def __Condizioni__(self,profondo = False):
         ret = set()
@@ -136,8 +141,7 @@ class ChanBoardWatchdog (threading.Thread):
                     if (fil.evaluate(threads_text["Replies"][reply])):
                         accept = True
                 if (accept):
-                    if (self.logger != None):
-                        self.logger.write("thread matched condition: "+thread)
+                    self.__writeOnLog__("thread matched condition: "+thread)
                     ret.add(thread)
         return ret
 
