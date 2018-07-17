@@ -83,8 +83,8 @@ print("")
 
 
 if(input("inserire 'salva' per salvare i file su disco: ").lower().strip()=="salva"):
-    ThreadWatch.SaveText()
-    ThreadWatch.SaveFiles()
+    ThreadWatch.__SaveText__()
+    ThreadWatch.__SaveFiles__()
 
 input("Premere invio per chiudere")
     

@@ -51,8 +51,6 @@ class ChanBoardWatchdog (threading.Thread):
         # Variabili di istanza
         self.board = board
         self.deepFilter = False
-        # Variabili per il logging
-        self.logger = None
         # Strutture interne
         self.parsed_threads_html = {}
         self.parsed_threads_text = {}
@@ -63,11 +61,16 @@ class ChanBoardWatchdog (threading.Thread):
         # Variabili per il threading
         self.frequenza = 10
         self.Attivo = False
+        # Variabili per il logging
+        self.logger = None
     
     # Metodo Run
     def run(self):
+        self.__writeOnLog__("Un watchdog ha iniziato a monitorare la board: "+self.board+"\n")
+        # Logica
         self.Attivo = True
         while(self.Attivo):
+            self.__writeOnLog__("Un watchdog sta monitorando la board: "+self.board+"\n")
             self.__Fetch__()
             accepted = self.__Condizioni__(self.deepFilter)
             for thread in accepted:
@@ -79,6 +82,9 @@ class ChanBoardWatchdog (threading.Thread):
 
     # Ferma il demone
     def stop(self):
+        # Logging
+        self.__writeOnLog__("Un watchdog ha smesso di monitorare la board: "+self.board+"\n")
+        # Logica
         self.Attivo = False
         for monitor in self.monitor_attivi:
             monitor.stop()
@@ -100,23 +106,24 @@ class ChanBoardWatchdog (threading.Thread):
     def setDeepFilterMode(self,mode = False):
         self.deepFilter = mode
 
-    def setLogger(self, logger_instance):
+    def setLogger(self, logger_instance = None):
         self.logger = logger_instance
 
-    # Add set of words to be evaluated in AND
+    # Aggiungi set di espressioni regolari da valutare in AND
     def addFilterToSet(self,new_filter):
         self.filters.add(new_filter)
 
-    # Remove set of words from filter
+    # Rimuovi set di espressioni regolari dal filtro
     def removeFilterToSet(self,target_filter):
         self.filters.remove(target_filter)
 
-    # Ascolta un thread
+    # Monitora un thread
     def SpawnThreadWatchdog(self,thread):
         watchdog = ChanThreadWatchdog(self.board,thread)
+        watchdog.setLogger(self.logger)
         return watchdog
 
-    # Scrivi nel logger
+    # Scrittura nel logger
     def __writeOnLog__(self, s):
         if (self.logger != None):
             self.logger.write(s)
@@ -145,7 +152,7 @@ class ChanBoardWatchdog (threading.Thread):
                     if (fil.evaluate(threads_text["Replies"][reply])):
                         accept = True
                 if (accept):
-                    self.__writeOnLog__("thread matched condition: "+thread)
+                    self.__writeOnLog__("Il thread: "+thread+" nella board "+self.board+" è stato considerato\n")
                     ret.add(thread)
         return ret
 
@@ -225,18 +232,23 @@ class ChanThreadWatchdog (threading.Thread):
         # Variabili per il threading
         self.frequenza = 10
         self.Attivo = False
+        # Variabili per il logging
+        self.logger = None
     
     # Metodo Run
     def run(self):
+        self.__writeOnLog__("Un watchdog ha iniziato a monitorare il thread "+self.thread+" nella board: "+self.board+"\n")
         self.Attivo = True
         while(self.Attivo):
+            self.__writeOnLog__("Un watchdog sta monitorando il thread "+self.thread+" nella board: "+self.board+"\n")
             self.__Fetch__()
-            self.SaveText()
-            self.SaveFiles()
+            self.__SaveText__()
+            self.__SaveFiles__()
             time.sleep(self.frequenza)
 
     # Ferma il demone
     def stop(self):
+        self.__writeOnLog__("Un watchdog ha smesso di monitorare il thread "+self.thread+" nella board: "+self.board+"\n")
         self.Attivo = False
 
     # Getter
@@ -249,8 +261,17 @@ class ChanThreadWatchdog (threading.Thread):
     def getTextDict(self):
         return self.parsed_text
 
+    # Setter
+    def setLogger(self, logger_instance = None):
+        self.logger = logger_instance
+
+    # Scrittura nel logger
+    def __writeOnLog__(self, s):
+        if (self.logger != None):
+            self.logger.write(s)
+
     # Salvataggio su disco del testo
-    def SaveText(self):
+    def __SaveText__(self):
         directory = os.path.dirname(self.thread+"/")
         
         if not os.path.exists(directory):
@@ -276,7 +297,7 @@ class ChanThreadWatchdog (threading.Thread):
             file.close()
     
     # Salvataggio su disco dei file
-    def SaveFiles(self):
+    def __SaveFiles__(self):
         directory = os.path.dirname(self.thread+"/files/")
         
         if not os.path.exists(directory):
