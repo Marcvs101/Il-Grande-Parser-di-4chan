@@ -66,11 +66,10 @@ class ChanBoardWatchdog (threading.Thread):
     
     # Metodo Run
     def run(self):
-        self.__writeOnLog__("Un watchdog ha iniziato a monitorare la board: "+self.board+"\n")
+        self.__writeOnLog__("Un watchdog ha iniziato a monitorare la board: "+self.board)
         # Logica
         self.Attivo = True
         while(self.Attivo):
-            self.__writeOnLog__("Un watchdog sta monitorando la board: "+self.board+"\n")
             self.__Fetch__()
             accepted = self.__Condizioni__(self.deepFilter)
             for thread in accepted:
@@ -83,7 +82,7 @@ class ChanBoardWatchdog (threading.Thread):
     # Ferma il demone
     def stop(self):
         # Logging
-        self.__writeOnLog__("Un watchdog ha smesso di monitorare la board: "+self.board+"\n")
+        self.__writeOnLog__("Un watchdog ha smesso di monitorare la board: "+self.board)
         # Logica
         self.Attivo = False
         for monitor in self.monitor_attivi:
@@ -152,7 +151,7 @@ class ChanBoardWatchdog (threading.Thread):
                     if (fil.evaluate(threads_text["Replies"][reply])):
                         accept = True
                 if (accept):
-                    self.__writeOnLog__("Il thread: "+thread+" nella board "+self.board+" è stato considerato\n")
+                    self.__writeOnLog__("Il thread: "+thread+" nella board "+self.board+" è stato considerato")
                     ret.add(thread)
         return ret
 
@@ -237,10 +236,9 @@ class ChanThreadWatchdog (threading.Thread):
     
     # Metodo Run
     def run(self):
-        self.__writeOnLog__("Un watchdog ha iniziato a monitorare il thread "+self.thread+" nella board: "+self.board+"\n")
+        self.__writeOnLog__("Un watchdog ha iniziato a monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = True
         while(self.Attivo):
-            self.__writeOnLog__("Un watchdog sta monitorando il thread "+self.thread+" nella board: "+self.board+"\n")
             self.__Fetch__()
             self.__SaveText__()
             self.__SaveFiles__()
@@ -248,7 +246,7 @@ class ChanThreadWatchdog (threading.Thread):
 
     # Ferma il demone
     def stop(self):
-        self.__writeOnLog__("Un watchdog ha smesso di monitorare il thread "+self.thread+" nella board: "+self.board+"\n")
+        self.__writeOnLog__("Un watchdog ha smesso di monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = False
 
     # Getter
@@ -341,7 +339,7 @@ class ChanThreadWatchdog (threading.Thread):
         
         img_c = self.parsed_html["OP_Post"].find_all(class_="fileThumb")
         for img in img_c:
-            if (not(img==None)):
+            if ((not(img==None)) and ("href" in img)):
                 self.parsed_files["OP_Post"] = img["href"]
                 if (not ("OP_Post" in self.saved_files)):
                     self.available_files.add("OP_Post")
@@ -349,7 +347,7 @@ class ChanThreadWatchdog (threading.Thread):
         for i in self.parsed_html["Replies"]:
             img_c = self.parsed_html["Replies"][i].find_all(class_="fileThumb")
             for img in img_c:
-                if (not(img==None)):
+                if ((not(img==None)) and ("href" in img)):
                     self.parsed_files["Replies"][i] = img["href"]
                     if (not (i in self.saved_files)):
                         self.available_files.add(i)

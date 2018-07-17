@@ -9,7 +9,7 @@ BOARD = input("inserire il nome della board: ").strip()
 BoardWatch = ChanBoardWatchdog(BOARD)
 BoardWatch.setDeepFilterMode(True)
 BoardWatch.setLogger(logger)
-f = Filter("filtro1", {"anon"})
+f = Filter("filtro1", {"try"})
 BoardWatch.addFilterToSet(f)
 
 print("Starting...")
