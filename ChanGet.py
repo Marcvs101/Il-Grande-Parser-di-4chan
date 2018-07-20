@@ -58,8 +58,8 @@ class ChanBoardWatchdog (threading.Thread):
         self.parsed_threads_text = {}
         self.filters = filters
         self.event_handlers = set()
-        # Strutture aux
         self.thread_monitorati = set()
+        # Strutture aux
         self.monitor_attivi = set()
         # Variabili per il threading
         self.frequenza = 10
@@ -78,7 +78,7 @@ class ChanBoardWatchdog (threading.Thread):
             if (len(accepted) > 0):
                 for evento in self.event_handlers:
                     try: evento(self)
-                    except(Error): self.__writeOnLog__("Errore nell'evento <"+str(evento)+">")
+                    except: self.__writeOnLog__("Errore nell'evento <"+str(evento)+">")
             for thread in accepted:
                 monitor = self.SpawnThreadWatchdog(thread)
                 self.monitor_attivi.add(monitor)
@@ -98,18 +98,19 @@ class ChanBoardWatchdog (threading.Thread):
     # Getter
     def getHTMLRawDict(self):
         "Ritorna un dizionario dell'HTML diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
-        
         return self.parsed_threads_html
 
     def getTextDict(self):
         "Ritorna un dizionario del testo interno al post diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
-        
         return self.parsed_threads_text
 
-    def getFilterSet():
+    def getFilterSet(self):
         "Ritorna il set di filtri attivi"
-        
         return self.filters
+
+    def getMonitoredSet(self):
+        "Ritorna il set dei thread che hanno passato le condizioni"
+        return self.thread_monitorati
 
     # Setter
     def setFilterSet(self,filters = set()):
@@ -263,7 +264,6 @@ class ChanThreadWatchdog (threading.Thread):
     # Metodo Run
     def run(self):
         "Necessario per il threading"
-        
         self.__writeOnLog__("Un watchdog ha iniziato a monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = True
         while(self.Attivo):
@@ -272,7 +272,7 @@ class ChanThreadWatchdog (threading.Thread):
             if (len(self.available_text) > 0):
                 for evento in self.event_handlers:
                     try: evento(self)
-                    except(Error): self.__writeOnLog__("Errore nell'evento <"+str(evento)+">")
+                    except: self.__writeOnLog__("Errore nell'evento <"+str(evento)+">")
                 self.__SaveText__()
             if (len(self.available_files) > 0):
                 self.__SaveFiles__()    
@@ -282,46 +282,38 @@ class ChanThreadWatchdog (threading.Thread):
     # Ferma il demone
     def stop(self):
         "Ferma il demone"
-        
         self.__writeOnLog__("Un watchdog ha smesso di monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = False
 
     # Getter
     def getHTMLRawDict(self):
         "Ritorna un dizionario dell'HTML diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
-        
         return self.parsed_html
 
     def getFileDict(self):
         "Ritorna un dizionario di link di file divisi per <post ID> trovati nell' 'OP_Post' e nelle 'Replies'"
-        
         return self.parsed_files
 
     def getTextDict(self):
         "Ritorna un dizionario del testo interno al post diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
-    
         return self.parsed_text
 
     # Setter
     def setLogger(self, logger_instance = None):
         "Aggiungi un logger alla classe. Default = None"
-    
         self.logger = logger_instance
 
     # Eventi
     def bindEvent(self,event):
         "Aggiungi una funzione da chiamare ogni volta che il demone scarica file a disco"
-        
         self.event_handlers.add(event)
 
     def unbindEvent(self,event):
         "Rimuovi una funzione dal pool di eventi da chiamare"
-        
         self.event_handlers.remove(event)
 
     def unbindAllEvents(self):
         "Rimuovi tutte le funzioni dal pool di eventi da chiamare"
-        
         self.event_handlers = set()
 
     # Scrittura nel logger
