@@ -46,7 +46,9 @@ class Filter:
 # Demone di una Board
 class ChanBoardWatchdog (threading.Thread):
     # Costruttore
-    def __init__(self,board,filters = set()):   "Costruttore"
+    def __init__(self,board,filters = set()):
+        "Costruttore"
+        
         threading.Thread.__init__(self)
         # Variabili di istanza
         self.board = board
@@ -94,13 +96,19 @@ class ChanBoardWatchdog (threading.Thread):
             monitor.stop()
 
     # Getter
-    def getHTMLRawDict(self):       "Ritorna un dizionario dell'HTML diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+    def getHTMLRawDict(self):
+        "Ritorna un dizionario dell'HTML diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+        
         return self.parsed_threads_html
 
-    def getTextDict(self):          "Ritorna un dizionario del testo interno al post diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+    def getTextDict(self):
+        "Ritorna un dizionario del testo interno al post diviso per <thread ID>. Ogni entry è suddivisa in 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+        
         return self.parsed_threads_text
 
-    def getFilterSet():             "Ritorna il set di filtri attivi"
+    def getFilterSet():
+        "Ritorna il set di filtri attivi"
+        
         return self.filters
 
     # Setter
@@ -223,7 +231,9 @@ class ChanBoardWatchdog (threading.Thread):
 # Demone di un thread
 class ChanThreadWatchdog (threading.Thread):
     # Costruttore
-    def __init__(self,board,thread):    "Costruttore"
+    def __init__(self,board,thread):
+        "Costruttore"
+        
         threading.Thread.__init__(self)
         # Variabili di istanza
         self.board = board
@@ -251,7 +261,9 @@ class ChanThreadWatchdog (threading.Thread):
         self.logger = None
     
     # Metodo Run
-    def run(self):      "Necessario per il threading"
+    def run(self):
+        "Necessario per il threading"
+        
         self.__writeOnLog__("Un watchdog ha iniziato a monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = True
         while(self.Attivo):
@@ -268,32 +280,48 @@ class ChanThreadWatchdog (threading.Thread):
             time.sleep(self.frequenza)
 
     # Ferma il demone
-    def stop(self):     "Ferma il demone"
+    def stop(self):
+        "Ferma il demone"
+        
         self.__writeOnLog__("Un watchdog ha smesso di monitorare il thread "+self.thread+" nella board: "+self.board)
         self.Attivo = False
 
     # Getter
-    def getHTMLRawDict(self):   "Ritorna un dizionario dell'HTML diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+    def getHTMLRawDict(self):
+        "Ritorna un dizionario dell'HTML diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+        
         return self.parsed_html
 
-    def getFileDict(self):      "Ritorna un dizionario di link di file divisi per <post ID> trovati nell' 'OP_Post' e nelle 'Replies'"
+    def getFileDict(self):
+        "Ritorna un dizionario di link di file divisi per <post ID> trovati nell' 'OP_Post' e nelle 'Replies'"
+        
         return self.parsed_files
 
-    def getTextDict(self):      "Ritorna un dizionario del testo interno al post diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+    def getTextDict(self):
+        "Ritorna un dizionario del testo interno al post diviso per 'OP_Post' e 'Replies'. Le replies sono a loro volta divise per <post ID>"
+    
         return self.parsed_text
 
     # Setter
-    def setLogger(self, logger_instance = None):    "Aggiungi un logger alla classe. Default = None"
+    def setLogger(self, logger_instance = None):
+        "Aggiungi un logger alla classe. Default = None"
+    
         self.logger = logger_instance
 
     # Eventi
-    def bindEvent(self,event):      "Aggiungi una funzione da chiamare ogni volta che il demone scarica file a disco"
+    def bindEvent(self,event):
+        "Aggiungi una funzione da chiamare ogni volta che il demone scarica file a disco"
+        
         self.event_handlers.add(event)
 
-    def unbindEvent(self,event):    "Rimuovi una funzione dal pool di eventi da chiamare"
+    def unbindEvent(self,event):
+        "Rimuovi una funzione dal pool di eventi da chiamare"
+        
         self.event_handlers.remove(event)
 
-    def unbindAllEvents(self):      "Rimuovi tutte le funzioni dal pool di eventi da chiamare"
+    def unbindAllEvents(self):
+        "Rimuovi tutte le funzioni dal pool di eventi da chiamare"
+        
         self.event_handlers = set()
 
     # Scrittura nel logger
