@@ -36,6 +36,10 @@ class Filter:
         for i in words:
             self.words.add(i.lower())
 
+    # ToString
+    def __repr__(self):
+        return self.name
+
     # Funzione di valutazione
     def evaluate(self, s):
         s_tokens = list(map(self.stemmer.stem, word_tokenize(s.replace(",", " ").replace(".", " ").replace("(", " ").replace(")", " "))))
