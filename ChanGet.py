@@ -1,11 +1,13 @@
 from urllib.request import Request
-from nltk.tokenize import word_tokenize
-from nltk.stem import SnowballStemmer
 import urllib.error
 import threading
 import time
 import os
 import re
+
+#pip install nltk
+from nltk.tokenize import word_tokenize
+from nltk.stem import SnowballStemmer
 
 #pip install bs4
 from bs4 import BeautifulSoup
