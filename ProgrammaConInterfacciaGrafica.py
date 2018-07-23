@@ -4,6 +4,7 @@ from ChanGet import ChanBoardWatchdog
 from ChanGet import ChanThreadWatchdog
 from ChanGet import Filter
 from Logger import Logger
+import time
 
 board_dict = {}
 global_filter_set = set()
@@ -20,6 +21,7 @@ def add_board_util(board):
     board_dict[board]["Filtri"] = set()
     logf = Logger("log_"+board+".txt")
     board_dict[board]["Watchdog"].setLogger(logf)
+    board_dict[board]["Watchdog"].bindEvent(refresh_event)
     board_dict[board]["Watchdog"].start()
 
 def remove_board_util(board):
@@ -204,6 +206,12 @@ def update_thread_gui_main(thread):
         try: finestra.addLabel("ThreadListEntry<"+str(i)+">",str(i))
         except: print("Non trovato "+str(i))
     finestra.stopScrollPane()
+
+def refresh_event(obj):
+    time.sleep(1)
+    update_board_gui_main()
+    if (targeted_board == obj.board):
+        show_thread_gui_main(targeted_board)
 
 init_board_gui_main()
 init_board_gui_new()
