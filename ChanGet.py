@@ -368,7 +368,7 @@ class ChanThreadWatchdog (threading.Thread):
             page = conn.read()
             conn.close()
 
-            file = open(directory+"/"+re.sub("//is[0-9]*.4chan.org/"+self.board+"/","",self.parsed_files["OP_Post"]),'wb')
+            file = open(directory+"/"+(self.parsed_files["OP_Post"][self.parsed_files["OP_Post"].rfind("/"):]),'wb')
             file.write(page)
             file.close()
 
@@ -384,7 +384,7 @@ class ChanThreadWatchdog (threading.Thread):
                 page = conn.read()
                 conn.close()
 
-                file = open(directory+"/"+re.sub("//is[0-9]*.4chan.org/"+self.board+"/","",self.parsed_files["Replies"][i]),'wb')
+                file = open(directory+"/"+(self.parsed_files["Replies"][i][self.parsed_files["Replies"][i].rfind("/"):]),'wb')
                 file.write(page)
                 file.close()
 
