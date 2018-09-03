@@ -359,7 +359,7 @@ class ChanThreadWatchdog (threading.Thread):
         
         if not os.path.exists(directory):
             os.makedirs(directory)
-        
+
         if (not(self.parsed_files["OP_Post"] == None) and ("OP_Post" in self.available_files)):
             Req = Request("http:"+self.parsed_files["OP_Post"])
             Req.add_header("User-Agent","TROLOLOLOLOLO")
@@ -396,17 +396,17 @@ class ChanThreadWatchdog (threading.Thread):
         self.parsed_files["OP_Post"] = None
         self.parsed_files["Replies"] = {}
         
-        img_c = self.parsed_html["OP_Post"].find_all(class_="fileThumb")
+        img_c = self.parsed_html["OP_Post"].find_all(class_="fileThumb",href=True)
         for img in img_c:
-            if ((not(img==None)) and ("href" in img)):
+            if (not(img==None)):
                 self.parsed_files["OP_Post"] = img["href"]
                 if (not ("OP_Post" in self.saved_files)):
                     self.available_files.add("OP_Post")
         
         for i in self.parsed_html["Replies"]:
-            img_c = self.parsed_html["Replies"][i].find_all(class_="fileThumb")
+            img_c = self.parsed_html["Replies"][i].find_all(class_="fileThumb",href=True)
             for img in img_c:
-                if ((not(img==None)) and ("href" in img)):
+                if (not(img==None)):
                     self.parsed_files["Replies"][i] = img["href"]
                     if (not (i in self.saved_files)):
                         self.available_files.add(i)
