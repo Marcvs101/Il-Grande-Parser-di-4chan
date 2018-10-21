@@ -7,7 +7,8 @@ Un simpatico oggetto per pescare i rimasugli della civiltà direttamente dal ces
 
 La libreria principale è "ChanGet.py", il resto sono esempi e test di utilizzo
 
-Le librerie usate sono:
+Le librerie importate dal modulo "ChanGet.py" sono:
 - bs4
+- nltk
 
 Questo non è assolutamente un progetto serio
